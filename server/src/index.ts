@@ -1,14 +1,13 @@
 import 'module-alias/register';
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
-import { productsRouter } from './modules/products';
 import * as mongoose from 'mongoose';
 import bicyclesModel from '../src/models/bicycles.model';
 const axios = require('axios');
 const app = express();
 app.use(bodyParser.json());
-// mongoose.connect('mongodb://testuser:test111@ds053206.mlab.com:53206/bicyclesdb');
-mongoose.connect('mongodb://127.0.0.1:27017/greenpakistan');
+//  mongoose.connect('mongodb://testuser:test111@ds053206.mlab.com:53206/bicyclesdb');
+// mongoose.connect('mongodb://127.0.0.1:27017/greenpakistan');
 
 // handling the cors
 app.use((req,res,next)=>{
@@ -22,18 +21,81 @@ app.use((req,res,next)=>{
   }
   next();
 });
-app.use('/products', productsRouter());
-app.get('/', (req, res) => {
-  bicyclesModel.find({})
+
+//get data against specific time
+app.get('/getdatabytime/:time',(req,res) =>{
+  const time = req.params.time;
+  bicyclesModel.find({openTime:time})
   .sort({ _id: -1 })  
   .then(data=>{
-   return res.status(200).json(data);
+    let coordinates:any=[];
+    console.log(data)
+    if(data==[])
+    {
+      data.forEach(element=>{
+        coordinates.push(element.geometry.coordinates);       
+      })
+      axios.get("https://www.api.openweathermap.org/data/2.5/weather?lat="+coordinates[0][1]+"&lon="+coordinates[0][0]+"")
+  .then((response:any) => {
+    return res.status(200).json(response);
+  })
+  .catch((err:any)=>{    
+    return res.status(404).json(err);
+  }) 
+   }
+   else
+   {     
+     return res.status(200).json('no Data Found')
+   }  
   }) 
   .catch(err=>{
     return res.status(404).json(err);
   })
-    // return res.send('hi'); 
 })
+//get data against specific kiosId
+app.get('/getdatabykiosid/:kiosid',(req,res) =>{
+  const id = req.params.kiosid;
+  console.log(id);
+  bicyclesModel.find({"properties[0].kioskId":id})
+  .sort({ _id: -1 })  
+  .then(data=>{
+    let coordinates:any=[];
+    console.log(data)
+    if(data==[])
+    {
+      data.forEach(element=>{
+        coordinates.push(element.geometry.coordinates);       
+      })
+      axios.get("https://www.api.openweathermap.org/data/2.5/weather?lat="+coordinates[0][1]+"&lon="+coordinates[0][0]+"")
+  .then((response:any) => {
+    return res.status(200).json(response);
+  })
+  .catch((err:any)=>{    
+    return res.status(404).json(err);
+  }) 
+   }
+   else
+   {     
+     return res.status(200).json('no Data Found')
+   }  
+  }) 
+  .catch(err=>{
+    return res.status(404).json(err);
+  })
+})
+
+app.get('/', (req, res) => {
+  bicyclesModel.find()
+  .sort({ _id: -1 })  
+  .then(data=>{
+    console.log(data[0].properties.kioskId);
+   return res.status(200).json(data);
+  }) 
+  .catch(err=>{
+    return res.status(404).json(err);
+  })   
+})
+
 // set time interval that fetches new data after avery 1 hour 
 setInterval(function () {
   axios.get('https://www.rideindego.com/stations/json/')
