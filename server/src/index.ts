@@ -3,10 +3,12 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as mongoose from 'mongoose';
 import bicyclesModel from '../src/models/bicycles.model';
+const checkAuth = require('./middleware/auth-check')
 const axios = require('axios');
+const jwt = require('jsonwebtoken');
 const app = express();
 app.use(bodyParser.json());
-//  mongoose.connect('mongodb://testuser:test111@ds053206.mlab.com:53206/bicyclesdb');
+mongoose.connect('mongodb://testuser:test111@ds053206.mlab.com:53206/bicyclesdb');
 // mongoose.connect('mongodb://127.0.0.1:27017/greenpakistan');
 
 // handling the cors
@@ -23,7 +25,7 @@ app.use((req,res,next)=>{
 });
 
 //get data against specific time
-app.get('/getdatabytime/:time',(req,res) =>{
+app.get('/getdatabytime/:time',checkAuth,(req,res) =>{
   const time = req.params.time;
   bicyclesModel.find({openTime:time})
   .sort({ _id: -1 })  
@@ -53,7 +55,7 @@ app.get('/getdatabytime/:time',(req,res) =>{
   })
 })
 //get data against specific kiosId
-app.get('/getdatabykiosid/:kiosid',(req,res) =>{
+app.get('/getdatabykiosid/:kiosid',checkAuth,(req,res) =>{
   const id = req.params.kiosid;
   console.log(id);
   bicyclesModel.find({"properties[0].kioskId":id})
@@ -85,11 +87,22 @@ app.get('/getdatabykiosid/:kiosid',(req,res) =>{
 })
 
 app.get('/', (req, res) => {
-  bicyclesModel.find()
-  .sort({ _id: -1 })  
+  bicyclesModel.find()  
+  .limit(10) 
   .then(data=>{
-    console.log(data[0].properties.kioskId);
-   return res.status(200).json(data);
+    let token = jwt.sign({
+     id:data[0]._id,
+  },
+ "secret",
+  {
+      expiresIn:"1day"
+
+  }
+  )
+   return res.status(200).json({
+     data:data,
+
+    });
   }) 
   .catch(err=>{
     return res.status(404).json(err);
@@ -115,8 +128,9 @@ setInterval(function () {
   });
 }, 
 1 *60* 60 * 1000); // 1 hour
+const port = process.env.PORT || 4000;
 const boot = (): void => {
-  app.listen(5000, () => {
+  app.listen(port, () => {
     console.log('server started');
   })
 }
