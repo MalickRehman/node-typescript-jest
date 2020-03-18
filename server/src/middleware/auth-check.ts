@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
-
-module.exports =(req,res,next) =>{
+module.exports = (req:any,res:any,next:any)=>{
     try
     {
         console.log(req.headers.authorization)
