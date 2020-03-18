@@ -8,6 +8,8 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 const app = express();
 app.use(bodyParser.json());
+
+//connect to mongodb
 mongoose.connect('mongodb://testuser:test111@ds053206.mlab.com:53206/bicyclesdb');
 // mongoose.connect('mongodb://127.0.0.1:27017/greenpakistan');
 
@@ -86,6 +88,7 @@ app.get('/getdatabykiosid/:kiosid',checkAuth,(req,res) =>{
   })
 })
 
+//get data from db
 app.get('/', (req, res) => {
   bicyclesModel.find()  
   .limit(10) 
@@ -128,6 +131,8 @@ setInterval(function () {
   });
 }, 
 1 *60* 60 * 1000); // 1 hour
+
+//connect with server
 const port = process.env.PORT || 4000;
 const boot = (): void => {
   app.listen(port, () => {

@@ -5,10 +5,11 @@ import {dataService} from '../services/data.service'
 export const dataActions ={
     fetchData
 };
-
+//action method for fetching data 
 function fetchData(){
     return (dispatch) =>{
         dispatch(request());
+        //call service method
         dataService.getData()
         .then(
             (res) => {

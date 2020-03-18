@@ -1,21 +1,21 @@
 import React from 'react';
 import './App.css';
-
 import { connect } from 'react-redux';
-
 import { dataActions } from './actions';
 
 class App extends React.Component { 
+  //get data before component rendering
   componentWillMount(){
     const {dispatch} = this.props;
+    //dispatch action to get data from db
     dispatch(dataActions.fetchData());
   }
   render(){
     let process = this.props.process;
+  //check if data return from redux store
     if(!process){
       return(<div></div>)
-    }   
-    console.log('procss',process);
+    } 
   return (
     <div className="App">
       <table>        

@@ -2,6 +2,7 @@ import { config } from '../config';
 export const dataService = {
  getData,
 };
+//method to get data from backend.
 function getData(){
   return  fetch(`${config.apiurl}`, {
         method: 'GET',
