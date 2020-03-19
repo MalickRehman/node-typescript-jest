@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { Features } from '../interfaces/bicycles.interface';
+import { Features } from './bicycles.interface';
 
 const bicyclesSchema = new mongoose.Schema({
     geometry:Object,

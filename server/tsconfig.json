@@ -2,12 +2,14 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "CommonJS",
+    "esModuleInterop": true,
     "strict": true,
     "outDir": "dist",
     "sourceMap": false,
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "allowJs": true,
     "baseUrl": "./",
     "paths": {  
       "@/*": [
@@ -19,7 +21,7 @@
     },
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts", "src/__test__/bike.spec.js"
   ],
   "exclude": [
     "src/**/*.spec.ts"

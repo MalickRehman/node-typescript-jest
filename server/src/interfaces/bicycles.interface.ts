@@ -1,9 +1,9 @@
-export interface Geometry {
+export interface IGeometry {
     coordinates:object;
     type:string;
   }
   
-  export interface Properties{
+  export interface IProperties{
     id:number;
     name:string;
     coordinates:object;
@@ -22,7 +22,7 @@ export interface Geometry {
     addressState:string;
     addressZipCode:string;
     bikes:{
-      [key:string]:Bikes
+      [key:string]:IBikes
     };
      closeTime: string,
      eventEnd: string
@@ -38,7 +38,7 @@ export interface Geometry {
      latitude :number,
      longitude : number
   }
-  export interface Bikes {
+  export interface IBikes {
     dockNumber:number;
     isElectric:boolean;
     isAvailable:boolean;
@@ -46,10 +46,10 @@ export interface Geometry {
   }
   export interface Features{   
     geometry: {
-        [key: string]: Geometry
+        [key: string]: IGeometry
     };
     properties:{
-        [key:string]:Properties
+        [key:string]:IProperties
     };
     type:string;
   }
