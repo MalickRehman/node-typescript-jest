@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "start": "node -r ts-node/register ./src/server.ts",
-    "dev": "nodemon",
+    "dev": "nodemon -r ts-node/register ./src/server.ts",
     "test": "jest --watch",
     "lint": "eslint ./src/**/*.ts",
     "coverage": "jest --coverage"
